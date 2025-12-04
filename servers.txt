@@ -1,0 +1,7 @@
+# This is our production fleet
+server01.prod.com
+server02.prod.com
+
+# Staging servers
+server03.stg.com
+server04.stg.com
