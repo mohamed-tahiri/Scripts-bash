@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Initialize a PHP project with Composer for WordPress
+# Initialize a PHP project with Composer for Sylius
 set -e
 
 PROJECT_DIR=$1    
@@ -42,20 +42,21 @@ fi
 cd "$PROJECT_DIR"
 echo "Changed directory to $PROJECT_DIR"
 
-# Check if composer.json already exists
+# Correction: Autoriser le plugin RECTOR au NIVEAU DU PROJET AVANT create-project 
+# Note: Cela nécessite que composer.json existe, ce qui n'est pas le cas.
+# La meilleure pratique est de le faire APRÈS, mais cela crée le risque d'échec des scripts post-création.
+
+# Tentative de créer le projet avec installation complète
 if [ ! -f "composer.json" ]; then
-    echo "Initializing a new WordPress project (without installing dependencies initially)..."
+    echo "Initializing a new Sylius project (with installation)..."
     
-    # Étape 1: Créer le projet et les fichiers (incluant composer.json), mais SANS installer les dépendances
-    composer create-project johnpbloch/wordpress . --no-interaction --no-install
+    # Étape 1: Tente de configurer l'autorisation du plugin au niveau global de Composer
+    # Si cela échoue, la seule solution est de le faire après la création du fichier.
+    echo "Attempting to allow the Rector plugin globally for this run..."
+    composer config --no-plugins allow-plugins.rector/extension-installer true --global || true
     
-    # Étape 2: Autoriser explicitement le plugin d'installation de WordPress pour contourner l'erreur "allow-plugins"
-    echo "Authorizing required Composer plugin: johnpbloch/wordpress-core-installer"
-    composer config --no-plugins allow-plugins.johnpbloch/wordpress-core-installer true
-    
-    # Étape 3: Installer les dépendances complètes
-    echo "Initial dependency installation..."
-    composer install --no-interaction
+    # Étape 2: Création du projet AVEC installation (ce qui est l'état désiré pour éviter l'erreur Runtime)
+    composer create-project sylius/sylius-standard . --no-interaction
     
 else
     echo "composer.json found. Skipping project initialization."
@@ -69,5 +70,5 @@ else
     fi
 fi
 
-echo "WordPress project setup complete in $PROJECT_DIR."
+echo "Sylius project setup complete in $PROJECT_DIR."
 exit 0
