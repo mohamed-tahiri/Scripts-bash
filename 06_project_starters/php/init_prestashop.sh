@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 
-# Initialize a PHP project with Composer for Prestashop
+# Initialize a PHP project with Composer for Prestashop (Targeting 8.x)
 set -e
 
-PROJECT_DIR=$1    
+PROJECT_DIR=$1
+PS_VERSION=${2:-"8.*"}   # Default version = 8.*
 
 # function to print usage
 print_usage() {
-    echo "Usage: $0 <project_directory>"
+    echo "Usage: $0 <project_directory> [prestashop_version]"
+    echo "Example: $0 myshop 8.1.*"
     exit 1
 }
 
@@ -44,16 +46,14 @@ echo "Changed directory to $PROJECT_DIR"
 
 # Check if composer.json already exists
 if [ ! -f "composer.json" ]; then
-    echo "Initializing a new Prestashop project..."
-    # Utilise le packagist officiel pour la dernière version stable de PrestaShop.
-    composer create-project prestashop/prestashop . --no-interaction
+    echo "Initializing a new Prestashop project (version $PS_VERSION)..."
+    composer create-project "prestashop/prestashop:$PS_VERSION" . --no-interaction
 else
     echo "composer.json found. Skipping project initialization."
 fi
 
 # --- Dependency Installation ---
 
-# Install dependencies if composer.lock exists
 if [ -f "composer.lock" ]; then
     echo "Installing dependencies..."
     composer install --no-interaction
