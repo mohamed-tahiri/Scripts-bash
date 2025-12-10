@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 NETWORK_DIR="$(cd "$(dirname "$0")" && pwd)"
