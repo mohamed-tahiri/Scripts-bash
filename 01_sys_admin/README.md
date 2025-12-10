@@ -24,3 +24,4 @@ Donner les droits d'exécution :
 
 ```bash
 chmod +x *.sh
+```
